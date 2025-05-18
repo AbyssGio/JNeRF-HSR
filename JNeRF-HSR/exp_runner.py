@@ -113,7 +113,8 @@ class Runner:
         image_perm = self.get_image_perm()
 
         for iter_i in tqdm(range(res_step)):
-            data = self.dataset.gen_random_rays_at(image_perm[self.iter_step % len(image_perm)], self.batch_size)
+            # data = self.dataset.gen_random_rays_at(image_perm[self.iter_step % len(image_perm)], self.batch_size)
+            data = self.dataset.gen_random_rays_at(image_perm[self.iter_step % len(image_perm)].item(), self.batch_size)
             #print(data)
             rays_o, rays_d, true_rgb, mask = data[:, :3], data[:, 3: 6], data[:, 6: 9], data[:, 9: 10]
             near, far = self.dataset.near_far_from_sphere(rays_o, rays_d)
@@ -147,17 +148,12 @@ class Runner:
             eikonal_loss = gradient_error
 
             #mask_loss = F.binary_cross_entropy(jt.safe_clip(weight_sum, 1e-3, 1.0 - 1e-3), mask)
-
-
-            loss = (color_fine_loss + \
-                   eikonal_loss * self.igr_weight)
-                   #  + \
-                   # mask_loss * self.mask_weight)
-
+            # print("Loss: eik loss", eikonal_loss)
+            # print("PSNR: ", psnr.item())
+            loss = color_fine_loss + eikonal_loss * self.igr_weight
             self.optimizer.step(loss)
 
             self.iter_step += 1
-
 
             if self.iter_step % self.report_freq == 0:
                 print(self.base_exp_dir)
@@ -176,6 +172,7 @@ class Runner:
 
             if self.iter_step % len(image_perm) == 0:
                 image_perm = self.get_image_perm()
+
 
     def get_image_perm(self):
         return jt.randperm(self.dataset.n_images)
@@ -374,10 +371,10 @@ if __name__ == '__main__':
 
     # torch.cuda.set_device(args.gpu)
     # keep same seed
-    if args.seed > 0:
-        random.seed(args.seed)
-        np.random.seed(args.seed)
-        jt.set_global_seed(args.seed)
+    # if args.seed > 0:
+    #     random.seed(args.seed)
+    #     np.random.seed(args.seed)
+    #     jt.set_global_seed(args.seed)
 
     runner = Runner(args.conf, args.mode, args.case, args.is_continue)
 

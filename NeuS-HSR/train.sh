@@ -1,1 +1,0 @@
-CUDA_VISIBLE_DEVICES=0 python exp_runner.py --mode train --conf ./confs/womask.conf --case Bronze

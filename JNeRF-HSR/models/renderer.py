@@ -225,10 +225,11 @@ class NeuSRenderer:
         sdf_nn_output = sdf_network(pts)
         #print(sdf_nn_output.attrs())
         sdf = sdf_nn_output[:, :1]
+        # print("SDF min:", sdf.min(dim=-1))
         feature_vector = sdf_nn_output[:, 1:]
         #print(sdf_network)
         gradients = Osqueeze(sdf_network.gradient(pts))
-
+        # print(gradients)
 
         inv_s = deviation_network(jt.zeros([1, 3]))[:, :1]
         inv_s = jt.safe_clip(inv_s, 1e-6, 1e6)# Single parameter

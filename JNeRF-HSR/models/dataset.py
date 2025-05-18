@@ -37,9 +37,8 @@ def load_K_Rt_from_P(filename, P=None):
     return intrinsics, pose
 
 
-class Dataset(jt.dataset.Dataset):
+class Dataset:
     def __init__(self, conf):
-        super(Dataset, self).__init__()
         print('Load data: Begin')
         #self.device = jt.device('cuda')
         self.conf = conf
@@ -113,6 +112,7 @@ class Dataset(jt.dataset.Dataset):
     def gen_random_rays_at(self, img_idx, batch_size):
         """
         Generate random rays at world space from one camera.
+
         """
         pixels_x = jt.randint(low=0, high=self.W, shape=[batch_size])
         pixels_y = jt.randint(low=0, high=self.H, shape=[batch_size])

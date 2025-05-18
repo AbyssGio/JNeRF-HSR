@@ -16,7 +16,7 @@ class SDFNetwork(nn.Module):
                  bias=0.5,
                  scale=1,
                  geometric_init=True,
-                 weight_norm=True,
+                 weight_norm=False,
                  inside_outside=False):
         super(SDFNetwork, self).__init__()
 
@@ -40,26 +40,27 @@ class SDFNetwork(nn.Module):
                 out_dim = dims[l + 1]
 
             lin = nn.Linear(dims[l], out_dim)
-
             if geometric_init:
                 if l == self.num_layers - 2:
                     if not inside_outside:
-                        jt.nn.init.trunc_normal_(lin.weight, mean=np.sqrt(np.pi) / np.sqrt(dims[l]), std=0.0001)
-                        jt.nn.init.constant_(lin.bias, -bias)
+                        lin.weight=jt.nn.init.gauss_(lin.weight, mean=np.sqrt(np.pi) / np.sqrt(dims[l]), std=0.0001)
+                        lin.bias=jt.nn.init.constant_(lin.bias, -bias)
                     else:
-                        jt.nn.init.trunc_normal_(lin.weight, mean=-np.sqrt(np.pi) / np.sqrt(dims[l]), std=0.0001)
-                        jt.nn.init.constant_(lin.bias, bias)
+                        lin.weight=jt.nn.init.gauss_(lin.weight, mean=-np.sqrt(np.pi) / np.sqrt(dims[l]), std=0.0001)
+                        lin.bias=jt.nn.init.constant_(lin.bias, bias)
                 elif multires > 0 and l == 0:
-                    jt.nn.init.constant_(lin.bias, 0.0)
-                    jt.nn.init.constant_(lin.weight[:, 3:], 0.0)
-                    jt.nn.init.trunc_normal_(lin.weight[:, :3], 0.0, np.sqrt(2) / np.sqrt(out_dim))
+                    lin.bias=jt.nn.init.constant_(lin.bias, 0.0)
+                    lin.weight[:, 3:]=jt.nn.init.constant_(lin.weight[:, 3:], 0.0)
+                    # 所有 nn.init 的初始化函数(带下划线)都可以inplace操作变量
+                    # 但无法操作切片后的变量, 所以需要赋值(和torch不同)
+                    lin.weight[:, :3]=jt.nn.init.gauss_(lin.weight[:, :3], 0.0, np.sqrt(2) / np.sqrt(out_dim))
                 elif multires > 0 and l in self.skip_in:
-                    jt.nn.init.constant_(lin.bias, 0.0)
-                    jt.nn.init.trunc_normal_(lin.weight, 0.0, np.sqrt(2) / np.sqrt(out_dim))
-                    jt.nn.init.constant_(lin.weight[:, -(dims[0] - 3):], 0.0)
+                    lin.bias=jt.nn.init.constant_(lin.bias, 0.0)
+                    lin.weight=jt.nn.init.gauss_(lin.weight, 0.0, np.sqrt(2) / np.sqrt(out_dim))
+                    lin.weight[:, -(dims[0] - 3):]=jt.nn.init.constant_(lin.weight[:, -(dims[0] - 3):], 0.0)
                 else:
-                    jt.nn.init.constant_(lin.bias, 0.0)
-                    jt.nn.init.trunc_normal_(lin.weight, 0.0, np.sqrt(2) / np.sqrt(out_dim))
+                    lin.bias=jt.nn.init.constant_(lin.bias, 0.0)
+                    lin.weight=jt.nn.init.gauss_(lin.weight, 0.0, np.sqrt(2) / np.sqrt(out_dim))
 
             if weight_norm:
                 lin = wn.weight_norm(lin)
@@ -125,7 +126,7 @@ class RenderingNetwork(nn.Module):
                  d_out,
                  d_hidden,
                  n_layers,
-                 weight_norm=True,
+                 weight_norm=False,
                  multires_view=0,
                  squeeze_out=True):
         super().__init__()
