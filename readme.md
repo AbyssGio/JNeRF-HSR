@@ -1,7 +1,7 @@
 # JNeRF-HSR
 
 本项目为使用计图框架实现的论文 **Looking Through the Glass: Neural Surface Reconstruction Against High Specular Reflections** 
-的代码，相较于原实现有明细速度上的提升。
+的代码，相较于原实现有明显速度上的提升。
 
 ## Dataset
  - 合成数据集 [Google Drive](https://drive.google.com/file/d/11tdooelweg4qzsYN1VzX8zw0-CXO4t9L/view?usp=share_link)（仅包含 RGB 图片），相机参数可以从 [DTU Dataset](https://roboimagedata.compute.dtu.dk/?page_id=36) 中获取
