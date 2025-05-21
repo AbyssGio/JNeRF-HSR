@@ -33,6 +33,11 @@
 
 感谢这些优秀的开源项目。
 
+## Known Issue
+
+- jittor 框架在进行并行矩阵相乘运算时使用GPU加速会检测矩阵的前 n 维，导致报错，但 CPU 模式不会出问题。
+   - 解决办法： 在本地jittor库里修改代码： `jittor/nn.py`文件中注释`120~124`行，让矩阵相乘不进行GPU加速。
+
 # Citation 
 
 如果这个仓库对您有帮助，请引用原作者的工作
@@ -44,8 +49,3 @@ booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVP
 year = {2023}
 }
 ```
-
-## 常见问题
-
-- jittor 框架在进行并行矩阵相乘运算时使用GPU加速会检测矩阵的前 n 维，导致报错，但 CPU 模式不会出问题。
-   - 解决办法： 在本地jittor库里修改代码： `jittor/nn.py`文件中注释`120~124`行，让矩阵相乘不进行GPU加速。
