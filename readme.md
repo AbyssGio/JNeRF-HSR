@@ -1,7 +1,7 @@
 # JNeRF-HSR
 
-本项目为使用计图框架实现的 [NeRF-HSR](https://arxiv.org/abs/2304.08706)
-
+本项目为使用计图框架实现的论文 **Looking Through the Glass: Neural Surface Reconstruction Against High Specular Reflections** 
+的代码，相较于原实现有明细速度上的提升。
 
 ## Dataset
  - 合成数据集 [Google Drive](https://drive.google.com/file/d/11tdooelweg4qzsYN1VzX8zw0-CXO4t9L/view?usp=share_link)（仅包含 RGB 图片），相机参数可以从 [DTU Dataset](https://roboimagedata.compute.dtu.dk/?page_id=36) 中获取
@@ -30,8 +30,8 @@
 ## Acknowlegement
 
 本项目基于 [NeuS](https://github.com/Totoro97/NeuS), [Jittor](https://github.com/Jittor/jittor), [NeRF-HSR](https://github.com/JiaxiongQ/NeuS-HSR) 的代码
-感谢这些优秀的开源项目。
 
+感谢这些优秀的开源项目。
 
 # Citation 
 
@@ -47,7 +47,5 @@ year = {2023}
 
 ## 常见问题
 
-jittor 框架在进行并行矩阵相乘运算时使用GPU加速会检测矩阵的前 n 维，导致报错，但 CPU 模式不会出问题。
-
-- 解决办法：
-在本地jittor库里修改代码： `jittor/nn.py`文件中注释`120~124`行，让矩阵相乘不进行GPU加速。
+- jittor 框架在进行并行矩阵相乘运算时使用GPU加速会检测矩阵的前 n 维，导致报错，但 CPU 模式不会出问题。
+   - 解决办法： 在本地jittor库里修改代码： `jittor/nn.py`文件中注释`120~124`行，让矩阵相乘不进行GPU加速。
