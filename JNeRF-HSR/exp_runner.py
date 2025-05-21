@@ -369,12 +369,11 @@ if __name__ == '__main__':
     parser.add_argument("--seed", type=int, default=2022)
     args = parser.parse_args()
 
-    # torch.cuda.set_device(args.gpu)
     # keep same seed
-    # if args.seed > 0:
-    #     random.seed(args.seed)
-    #     np.random.seed(args.seed)
-    #     jt.set_global_seed(args.seed)
+    if args.seed > 0:
+        random.seed(args.seed)
+        np.random.seed(args.seed)
+        jt.set_global_seed(args.seed)
 
     runner = Runner(args.conf, args.mode, args.case, args.is_continue)
 
